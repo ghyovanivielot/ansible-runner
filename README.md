@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Windows Server Automation with Ansible
 
 A comprehensive Ansible automation suite for Windows Server management, demonstrating enterprise-level infrastructure automation skills.
