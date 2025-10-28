@@ -1,160 +1,163 @@
-<<<<<<< HEAD
 # Windows Server Automation with Ansible
 
-A comprehensive Ansible automation suite for Windows Server management, demonstrating enterprise-level infrastructure automation skills.
+A comprehensive Ansible automation suite for Windows Server management, demonstrating enterprise-level infrastructure automation capabilities.
 
-## 🚀 Features
+## Overview
 
-- **Complete Windows Server Setup** - Automated IIS installation and configuration
-- **Application Deployment** - Full web application deployment with rollback capabilities
-- **User Management** - Service account creation and security configuration
-- **System Configuration** - Registry settings, scheduled tasks, and service management
-- **Error Handling** - Robust error handling with automatic rollback
-- **Multi-Environment Support** - Production-ready inventory management
-- **Security Best Practices** - Encrypted secrets with Ansible Vault
+This project provides production-ready Ansible playbooks for automating Windows Server configuration, application deployment, and system management tasks. It showcases best practices for infrastructure as code, configuration management, and DevOps automation in Windows environments.
 
-## 📋 Prerequisites
+## Features
 
-- Ansible 2.15+
-- Python 3.9+
+- Complete Windows Server configuration management
+- Automated web application deployment with rollback capabilities
+- User and service account management
+- Registry configuration and scheduled task automation
+- Multi-environment inventory support
+- Security-focused credential management with Ansible Vault
+- Comprehensive error handling and recovery mechanisms
+- Deployment verification and health checks
+
+## Prerequisites
+
+- Ansible 2.15 or higher
+- Python 3.9 or higher
 - Windows Server 2016+ with WinRM enabled
-- PowerShell 5.1+
+- PowerShell 5.1 or higher
 
-## 🛠️ Quick Start
+## Quick Start
 
-1. **Clone the repository**
+1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/ansible-windows-automation.git
-   cd ansible-windows-automation
+   git clone https://github.com/ghyovanivielot/ansible-runner.git
+   cd ansible-runner
    ```
 
-2. **Set up Python environment**
+2. Set up Python virtual environment:
    ```bash
    python3 -m venv ansible-venv
    source ansible-venv/bin/activate
    pip install ansible pywinrm
    ```
 
-3. **Configure inventory**
+3. Configure inventory:
    ```bash
-   # Edit inventory/production with your Windows servers
    cp inventory/production.example inventory/production
+   # Edit inventory/production with your Windows servers
    ```
 
-4. **Run the demo**
+4. Run the demonstration playbook:
    ```bash
-   # macOS users need this environment variable
+   # macOS users may need this environment variable
    export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
    
-   ansible-playbook interview-demo.yml -i inventory/production
+   ansible-playbook playbooks/interview-demo.yml -i inventory/production
    ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── playbooks/
-│   ├── interview-demo.yml          # Main demonstration playbook
-│   ├── deploy-webapp.yml           # Full application deployment
+│   ├── interview-demo.yml          # Comprehensive demonstration playbook
+│   ├── deploy-webapp.yml           # Production web application deployment
 │   ├── windows-server-setup.yml    # Complete server configuration
-│   └── verify-changes.yml          # Deployment verification
+│   ├── verify-changes.yml          # Deployment verification
+│   └── ...                         # Additional automation playbooks
 ├── inventory/
-│   └── production                  # Production environment inventory
+│   ├── production.example          # Template inventory file
+│   └── production                  # Production environment (not in repo)
 ├── group_vars/
 │   └── windows/
-│       ├── main.yml               # Main variables
-│       └── vault.yml              # Encrypted secrets
+│       ├── main.yml               # Configuration variables
+│       └── vault.yml.example      # Template for encrypted secrets
 ├── templates/
 │   └── web.config.j2              # Application configuration template
-└── roles/                         # Ansible roles structure
+└── roles/                         # Ansible roles directory structure
 ```
 
-## 🎯 Key Playbooks
+## Key Playbooks
 
-### Interview Demo (`interview-demo.yml`)
-Comprehensive demonstration of Windows automation capabilities:
-- ✅ System information gathering
-- ✅ User account management
-- ✅ Directory structure creation
-- ✅ Configuration file deployment
-- ✅ Registry management
-- ✅ Scheduled task automation
-- ✅ Service management
-- ✅ Error handling
+### Interview Demo (interview-demo.yml)
+Demonstrates core Windows automation capabilities including:
+- System information gathering and validation
+- User account and service management
+- Directory structure creation and file deployment
+- Registry configuration management
+- Scheduled task automation
+- Service state management
+- Comprehensive error handling
 
-### Web Application Deployment (`deploy-webapp.yml`)
-Production-ready application deployment with:
-- 🔄 Automatic backup and rollback
-- 🛡️ Security-focused service accounts
-- 🔧 IIS configuration management
-- 🔍 Health checks and verification
-- 📊 Comprehensive logging
+### Web Application Deployment (deploy-webapp.yml)
+Production-ready deployment workflow featuring:
+- Automated backup and rollback mechanisms
+- Security-focused service account creation
+- IIS configuration and website management
+- Application health checks and verification
+- Comprehensive logging and reporting
 
-## 🔐 Security Features
+## Security Implementation
 
-- **Ansible Vault** for sensitive data encryption
-- **Service accounts** with least-privilege access
-- **No hardcoded passwords** in playbooks
-- **Secure WinRM** configuration
-- **Input validation** and sanitization
+- Ansible Vault integration for sensitive data encryption
+- Service accounts configured with least-privilege access
+- No hardcoded credentials in playbooks
+- Secure WinRM configuration requirements
+- Input validation and sanitization
 
-## 📊 Monitoring & Verification
+## Verification and Testing
 
-Run the verification playbook to check all deployed components:
+Execute the verification playbook to validate all deployed components:
 
 ```bash
-ansible-playbook verify-changes.yml -i inventory/production
+ansible-playbook playbooks/verify-changes.yml -i inventory/production
 ```
 
-This validates:
-- Directory structures
-- File deployments
-- User accounts
-- Registry settings
-- Scheduled tasks
-- Service status
+This playbook validates:
+- Directory structures and file deployments
+- User accounts and permissions
+- Registry settings and configurations
+- Scheduled tasks and service states
+- Application functionality and accessibility
 
-## 🌟 Skills Demonstrated
+## Skills Demonstrated
 
-- **Infrastructure as Code** - Declarative server configuration
-- **Configuration Management** - Consistent, repeatable deployments
-- **Error Handling** - Robust failure recovery and rollback
-- **Security Best Practices** - Encrypted secrets and secure authentication
-- **Multi-Environment Management** - Scalable inventory organization
-- **Windows Administration** - PowerShell, IIS, Registry, Services
-- **DevOps Practices** - Automated testing and verification
+- **Infrastructure as Code**: Declarative server configuration management
+- **Configuration Management**: Consistent, repeatable deployments across environments
+- **Error Handling**: Robust failure recovery and automatic rollback mechanisms
+- **Security Best Practices**: Encrypted credential management and secure authentication
+- **Multi-Environment Management**: Scalable inventory and variable organization
+- **Windows Administration**: PowerShell integration, IIS management, registry operations
+- **DevOps Practices**: Automated testing, verification, and deployment workflows
 
-## 🚀 Advanced Usage
+## Advanced Usage
 
-### Encrypt Secrets
+### Encrypting Sensitive Data
 ```bash
 ansible-vault encrypt group_vars/windows/vault.yml
 ```
 
-### Deploy to Multiple Environments
+### Multi-Environment Deployments
 ```bash
-# Development
-ansible-playbook deploy-webapp.yml -i inventory/development
+# Development environment
+ansible-playbook playbooks/deploy-webapp.yml -i inventory/development
 
-# Production
-ansible-playbook deploy-webapp.yml -i inventory/production
+# Production environment
+ansible-playbook playbooks/deploy-webapp.yml -i inventory/production
 ```
 
-### Custom Variables
-Override default variables in `group_vars/` or pass via command line:
+### Variable Overrides
 ```bash
-ansible-playbook interview-demo.yml -i inventory/production -e "app_version=2.0.0"
+ansible-playbook playbooks/interview-demo.yml -i inventory/production -e "app_version=2.0.0"
 ```
 
-## 📈 Results
+## Results and Impact
 
-Successfully automates:
-- **50+ Windows servers** in parallel
-- **Zero-downtime deployments** with rollback capability
-- **Consistent configuration** across environments
-- **Reduced deployment time** from hours to minutes
-- **Eliminated configuration drift** through automation
+This automation suite enables:
+- Parallel deployment across multiple Windows servers
+- Zero-downtime deployments with automatic rollback capability
+- Consistent configuration management across environments
+- Significant reduction in deployment time and manual errors
+- Elimination of configuration drift through automated enforcement
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -162,17 +165,16 @@ Successfully automates:
 4. Push to the branch
 5. Create a Pull Request
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-## 👨‍💻 Author
+## Author
 
-**Your Name**
-- LinkedIn: [Your LinkedIn Profile]
-- GitHub: [@yourusername]
-- Email: your.email@domain.com
+**Ghyovani Vielot**
+- GitHub: [@ghyovanivielot](https://github.com/ghyovanivielot)
+- LinkedIn: [Connect with me](https://linkedin.com/in/yourprofile)
 
 ---
 
-*This project demonstrates enterprise-level Windows Server automation capabilities using Ansible, showcasing skills in infrastructure as code, configuration management, and DevOps best practices.*
+This project demonstrates enterprise-level Windows Server automation capabilities using Ansible, showcasing expertise in infrastructure as code, configuration management, and DevOps best practices.
