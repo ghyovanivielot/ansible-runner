@@ -1,0 +1,21 @@
+---
+- name: PowerShell Automation Examples
+  hosts: windows
+  tasks:
+    - name: Get system information
+      win_shell: |
+        Get-ComputerInfo | Select-Object WindowsProductName, TotalPhysicalMemory, CsProcessors
+      register: system_info
+    
+    - name: Display system info
+      debug:
+        var: system_info.stdout
+    
+    - name: Check disk space
+      win_shell: |
+        Get-WmiObject -Class Win32_LogicalDisk | Select-Object DeviceID, Size, FreeSpace | Format-Table -AutoSize
+      register: disk_info
+    
+    - name: Display disk info
+      debug:
+        var: disk_info.stdout

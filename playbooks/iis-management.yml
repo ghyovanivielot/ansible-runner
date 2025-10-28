@@ -1,0 +1,39 @@
+---
+- name: IIS Server Management
+  hosts: windows
+  tasks:
+    - name: Ensure IIS is running
+      win_service:
+        name: W3SVC
+        state: started
+        start_mode: auto
+    
+    - name: Create application directory
+      win_file:
+        path: C:\inetpub\myapp
+        state: directory
+    
+    - name: Deploy simple web page
+      win_copy:
+        content: |
+          <html>
+          <head><title>Ansible Managed Server</title></head>
+          <body>
+            <h1>Server managed by Ansible</h1>
+            <p>This page was deployed by Ansible automation</p>
+          </body>
+          </html>
+        dest: C:\inetpub\myapp\index.html
+    
+    - name: Create IIS application pool
+      win_iis_webapppool:
+        name: MyAppPool
+        state: present
+    
+    - name: Create IIS website
+      win_iis_website:
+        name: MyApp
+        state: started
+        port: 8080
+        physical_path: C:\inetpub\myapp
+        application_pool: MyAppPool

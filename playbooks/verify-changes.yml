@@ -1,0 +1,93 @@
+---
+- name: Verify Changes Made on Windows Server
+  hosts: windows
+  tasks:
+    # Check created directories
+    - name: Check application directories
+      win_stat:
+        path: "{{ item }}"
+      register: dir_check
+      loop:
+        - "C:\\inetpub\\InterviewApp"
+        - "C:\\inetpub\\InterviewApp\\logs"
+        - "C:\\inetpub\\InterviewApp\\config"
+        - "C:\\Backups\\InterviewApp"
+        
+    - name: Display directory status
+      debug:
+        msg: "{{ item.item }}: {{ 'EXISTS' if item.stat.exists else 'MISSING' }}"
+      loop: "{{ dir_check.results }}"
+      
+    # Check created files
+    - name: Check deployed files
+      win_stat:
+        path: "{{ item }}"
+      register: file_check
+      loop:
+        - "C:\\inetpub\\InterviewApp\\index.html"
+        - "C:\\inetpub\\InterviewApp\\config\\app.config"
+        
+    - name: Display file status and content
+      block:
+        - name: Show file status
+          debug:
+            msg: "{{ item.item }}: {{ 'EXISTS' if item.stat.exists else 'MISSING' }} ({{ item.stat.size | default(0) }} bytes)"
+          loop: "{{ file_check.results }}"
+          
+        - name: Show index.html content (first 500 chars)
+          win_shell: Get-Content "C:\inetpub\InterviewApp\index.html" | Select-Object -First 10
+          register: index_content
+          
+        - debug:
+            msg: "{{ index_content.stdout_lines }}"
+            
+    # Check user account
+    - name: Verify service account
+      win_shell: Get-LocalUser -Name "svc_webapp" | Select-Object Name, Enabled, LastLogon
+      register: user_check
+      ignore_errors: yes
+      
+    - name: Display user info
+      debug:
+        msg: "{{ user_check.stdout_lines }}"
+      when: user_check.rc == 0
+      
+    # Check registry entries
+    - name: Check registry settings
+      win_reg_stat:
+        path: "HKLM:\\SOFTWARE\\InterviewApp"
+        name: "{{ item }}"
+      register: reg_check
+      loop:
+        - "Version"
+        - "InstallDate"
+        - "LogLevel"
+        
+    - name: Display registry values
+      debug:
+        msg: "Registry {{ item.item }}: {{ item.value | default('NOT FOUND') }}"
+      loop: "{{ reg_check.results }}"
+      
+    # Check scheduled task
+    - name: Verify scheduled task
+      win_shell: Get-ScheduledTask -TaskName "InterviewApp Cleanup" | Select-Object TaskName, State
+      register: task_check
+      ignore_errors: yes
+      
+    - name: Display task info
+      debug:
+        msg: "{{ task_check.stdout_lines }}"
+      when: task_check.rc == 0
+      
+    # Check services
+    - name: Check service status
+      win_shell: Get-Service -Name "{{ item }}" | Select-Object Name, Status
+      register: service_check
+      loop:
+        - "Spooler"
+        - "BITS"
+        
+    - name: Display service status
+      debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ service_check.results }}"

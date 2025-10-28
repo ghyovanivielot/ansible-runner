@@ -1,0 +1,11 @@
+[windows]
+10.211.55.3
+
+[windows:vars]
+ansible_user=Administrator
+ansible_password=freethebrain
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_transport=basic
+ansible_port=5985
+ansible_winrm_scheme=http

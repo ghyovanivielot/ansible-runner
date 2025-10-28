@@ -1,0 +1,7 @@
+---
+# Encrypted secrets (use ansible-vault encrypt group_vars/windows/vault.yml)
+# Copy this file to vault.yml and encrypt with: ansible-vault encrypt group_vars/windows/vault.yml
+
+vault_db_password: "YourSecureDBPassword"
+vault_service_account_password: "YourServiceAccountPassword"
+vault_admin_password: "YourAdminPassword"

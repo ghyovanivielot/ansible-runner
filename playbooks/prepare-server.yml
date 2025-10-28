@@ -1,0 +1,27 @@
+---
+- name: Prepare Windows Server for Web Applications
+  hosts: windows
+  tasks:
+    - name: Install IIS and required features
+      win_feature:
+        name:
+          - IIS-WebServerRole
+          - IIS-WebServer
+          - IIS-CommonHttpFeatures
+          - IIS-ApplicationDevelopment
+          - IIS-NetFxExtensibility45
+          - IIS-ASPNET45
+          - IIS-ManagementConsole
+        state: present
+      register: iis_install
+      
+    - name: Reboot if required
+      win_reboot:
+        reboot_timeout: 600
+      when: iis_install.reboot_required
+      
+    - name: Verify IIS is running
+      win_service:
+        name: W3SVC
+        state: started
+        start_mode: auto

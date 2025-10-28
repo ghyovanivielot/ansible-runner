@@ -1,0 +1,42 @@
+---
+- name: Windows 10 Configuration
+  hosts: windows
+  tasks:
+    - name: Install additional Windows features
+      win_optional_feature:
+        name:
+          - IIS-ASPNET45
+          - IIS-NetFxExtensibility45
+        state: present
+    
+    - name: Configure Windows services
+      win_service:
+        name: "{{ item }}"
+        state: started
+        start_mode: auto
+      loop:
+        - W3SVC
+        - WAS
+    
+    - name: Create multiple directories
+      win_file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - C:\Apps
+        - C:\Logs
+        - C:\Config
+    
+    - name: Install software via PowerShell
+      win_shell: |
+        if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        }
+        choco install notepadplusplus -y
+      register: choco_install
+    
+    - name: Show installation result
+      debug:
+        var: choco_install.stdout

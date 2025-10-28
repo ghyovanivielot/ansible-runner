@@ -1,0 +1,166 @@
+---
+- name: Interview Demo - Windows Server Automation
+  hosts: windows
+  vars:
+    app_name: "InterviewApp"
+    app_version: "1.0.0"
+    app_path: "C:\\inetpub\\{{ app_name }}"
+    
+  tasks:
+    # Demonstrate error handling
+    - name: System Information Gathering
+      block:
+        - name: Get system info
+          win_shell: |
+            Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, TotalPhysicalMemory
+          register: system_info
+          
+        - name: Display system information
+          debug:
+            msg: "{{ system_info.stdout_lines }}"
+            
+      rescue:
+        - debug:
+            msg: "Failed to gather system info, continuing with deployment"
+    
+    # User Management
+    - name: Create service account
+      win_user:
+        name: "svc_webapp"
+        password: "TempPass123!"
+        state: present
+        groups:
+          - Users
+      no_log: true
+      
+    # File Operations
+    - name: Create application directory structure
+      win_file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ app_path }}"
+        - "{{ app_path }}\\logs"
+        - "{{ app_path }}\\config"
+        - "C:\\Backups\\{{ app_name }}"
+        
+    # Template Usage
+    - name: Deploy configuration file
+      win_copy:
+        content: |
+          [Application]
+          Name={{ app_name }}
+          Version={{ app_version }}
+          Environment=Production
+          LogLevel=Info
+          
+          [Database]
+          Server=sql-server.domain.com
+          Database={{ app_name }}DB
+          Timeout=30
+        dest: "{{ app_path }}\\config\\app.config"
+        
+    # Deploy application
+    - name: Deploy web application
+      win_copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>{{ app_name }} - Interview Demo</title>
+              <style>
+                  body { font-family: Arial; margin: 40px; background: #f5f5f5; }
+                  .container { background: white; padding: 20px; border-radius: 8px; }
+                  .success { color: green; }
+                  .info { color: blue; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1 class="success">✓ Deployment Successful!</h1>
+                  <h2>{{ app_name }} v{{ app_version }}</h2>
+                  
+                  <h3>Server Information:</h3>
+                  <ul>
+                      <li><strong>Server:</strong> {{ inventory_hostname }}</li>
+                      <li><strong>Environment:</strong> Production</li>
+                      <li><strong>Deployed:</strong> {{ ansible_date_time.iso8601 }}</li>
+                      <li><strong>Ansible User:</strong> {{ ansible_user }}</li>
+                  </ul>
+                  
+                  <h3 class="info">Automation Features Demonstrated:</h3>
+                  <ul>
+                      <li>✓ User Management (Service Accounts)</li>
+                      <li>✓ Directory Structure Creation</li>
+                      <li>✓ Configuration File Deployment</li>
+                      <li>✓ Error Handling & Recovery</li>
+                      <li>✓ Variable Usage & Templating</li>
+                      <li>✓ Windows Service Management</li>
+                      <li>✓ Security Best Practices</li>
+                  </ul>
+              </div>
+          </body>
+          </html>
+        dest: "{{ app_path }}\\index.html"
+        
+    # Service Management
+    - name: Manage Windows services
+      win_service:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      loop:
+        - { name: "Spooler", state: "started" }
+        - { name: "BITS", state: "started" }
+      ignore_errors: yes
+      
+    # Registry Operations
+    - name: Configure application registry settings
+      win_regedit:
+        path: "HKLM:\\SOFTWARE\\{{ app_name }}"
+        name: "{{ item.name }}"
+        data: "{{ item.value }}"
+        type: "{{ item.type }}"
+      loop:
+        - { name: "Version", value: "{{ app_version }}", type: "string" }
+        - { name: "InstallDate", value: "{{ ansible_date_time.date }}", type: "string" }
+        - { name: "LogLevel", value: 2, type: "dword" }
+        
+    # Scheduled Task
+    - name: Create maintenance task
+      win_scheduled_task:
+        name: "{{ app_name }} Cleanup"
+        description: "Daily cleanup task for {{ app_name }}"
+        actions:
+          - path: powershell.exe
+            arguments: -Command "Get-ChildItem '{{ app_path }}\\logs' -Recurse | Where-Object {$_.LastWriteTime -lt (Get-Date).AddDays(-7)} | Remove-Item -Force"
+        triggers:
+          - type: daily
+            start_boundary: "2023-01-01T02:00:00"
+        username: SYSTEM
+        state: present
+        enabled: yes
+        
+    # Health Check
+    - name: Verify deployment
+      win_stat:
+        path: "{{ app_path }}\\index.html"
+      register: app_check
+      
+    - name: Deployment verification
+      debug:
+        msg: |
+          🎉 INTERVIEW DEMO COMPLETE! 🎉
+          
+          Deployment Status: {{ 'SUCCESS' if app_check.stat.exists else 'FAILED' }}
+          Application Path: {{ app_path }}
+          Files Created: {{ app_check.stat.exists | ternary('✓', '✗') }}
+          
+          Key Skills Demonstrated:
+          • Windows Server Automation
+          • Error Handling & Recovery
+          • User & Service Management  
+          • File Operations & Templates
+          • Registry Configuration
+          • Scheduled Task Management
+          • Security Best Practices
+          • Idempotent Operations

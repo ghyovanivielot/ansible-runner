@@ -1,0 +1,24 @@
+[webservers]
+# your-windows-server-1.domain.com
+# your-windows-server-2.domain.com
+
+[databases]
+# your-db-server.domain.com
+
+[windows:children]
+webservers
+databases
+
+[windows:vars]
+ansible_user=Administrator
+ansible_password={{ vault_admin_password }}
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_transport=basic
+ansible_port=5985
+ansible_winrm_scheme=http
+
+[webservers:vars]
+environment=production
+backup_enabled=true
+monitoring_enabled=true

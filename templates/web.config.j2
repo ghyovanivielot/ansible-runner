@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <appSettings>
+    <add key="Environment" value="{{ environment }}" />
+    <add key="Version" value="{{ app_version }}" />
+    <add key="DatabaseServer" value="{{ db_server }}" />
+    <add key="DatabaseName" value="{{ db_name }}" />
+    <add key="DatabaseUser" value="{{ db_user }}" />
+  </appSettings>
+  
+  <connectionStrings>
+    <add name="DefaultConnection" 
+         connectionString="Server={{ db_server }};Database={{ db_name }};User Id={{ db_user }};Password={{ db_password }};Encrypt=true;TrustServerCertificate=true;" 
+         providerName="System.Data.SqlClient" />
+  </connectionStrings>
+  
+  <system.web>
+    <compilation targetFramework="4.8" />
+    <httpRuntime targetFramework="4.8" maxRequestLength="51200" />
+    <customErrors mode="{{ 'Off' if environment == 'development' else 'RemoteOnly' }}" />
+  </system.web>
+  
+  <system.webServer>
+    <defaultDocument>
+      <files>
+        <add value="index.html" />
+      </files>
+    </defaultDocument>
+    
+    <httpErrors errorMode="{{ 'Detailed' if environment == 'development' else 'DetailedLocalOnly' }}" />
+    
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="52428800" />
+      </requestFiltering>
+    </security>
+  </system.webServer>
+</configuration>

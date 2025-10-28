@@ -1,0 +1,22 @@
+---
+# Application Configuration
+app_name: "MyIISApp"
+app_version: "V.1.0"
+app_path: "C:\\inetpub\\{{ app_name }}"
+app_pool_name: "{{ app_name }}Pool"
+app_port: 8080
+
+# Database Configuration
+db_server: "sql-server.domain.com"
+db_name: "{{ app_name }}DB"
+db_user: "{{ app_name }}User"
+db_password: "{{ vault_db_password }}"
+
+# Service Account
+service_account: "svc_{{ app_name | lower }}"
+service_password: "{{ vault_service_account_password }}"
+
+# Environment specific
+environment: "production"
+backup_enabled: true
+monitoring_enabled: true
