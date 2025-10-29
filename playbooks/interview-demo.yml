@@ -1,8 +1,8 @@
 ---
-- name: Interview Demo - Windows Server Automation
+- name: Windows Server Automation Demo
   hosts: windows
   vars:
-    app_name: "InterviewApp"
+    app_name: "WebApp"
     app_version: "1.0.0"
     app_path: "C:\\inetpub\\{{ app_name }}"
     
@@ -67,7 +67,7 @@
           <!DOCTYPE html>
           <html>
           <head>
-              <title>{{ app_name }} - Interview Demo</title>
+              <title>{{ app_name }} - Automation Demo</title>
               <style>
                   body { font-family: Arial; margin: 40px; background: #f5f5f5; }
                   .container { background: white; padding: 20px; border-radius: 8px; }
@@ -149,7 +149,7 @@
     - name: Deployment verification
       debug:
         msg: |
-          🎉 INTERVIEW DEMO COMPLETE! 🎉
+          🎉 AUTOMATION DEMO COMPLETE! 🎉
           
           Deployment Status: {{ 'SUCCESS' if app_check.stat.exists else 'FAILED' }}
           Application Path: {{ app_path }}

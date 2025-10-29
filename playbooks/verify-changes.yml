@@ -8,10 +8,10 @@
         path: "{{ item }}"
       register: dir_check
       loop:
-        - "C:\\inetpub\\InterviewApp"
-        - "C:\\inetpub\\InterviewApp\\logs"
-        - "C:\\inetpub\\InterviewApp\\config"
-        - "C:\\Backups\\InterviewApp"
+        - "C:\\inetpub\\WebApp"
+        - "C:\\inetpub\\WebApp\\logs"
+        - "C:\\inetpub\\WebApp\\config"
+        - "C:\\Backups\\WebApp"
         
     - name: Display directory status
       debug:
@@ -24,8 +24,8 @@
         path: "{{ item }}"
       register: file_check
       loop:
-        - "C:\\inetpub\\InterviewApp\\index.html"
-        - "C:\\inetpub\\InterviewApp\\config\\app.config"
+        - "C:\\inetpub\\WebApp\\index.html"
+        - "C:\\inetpub\\WebApp\\config\\app.config"
         
     - name: Display file status and content
       block:
@@ -35,7 +35,7 @@
           loop: "{{ file_check.results }}"
           
         - name: Show index.html content (first 500 chars)
-          win_shell: Get-Content "C:\inetpub\InterviewApp\index.html" | Select-Object -First 10
+          win_shell: Get-Content "C:\inetpub\WebApp\index.html" | Select-Object -First 10
           register: index_content
           
         - debug:
@@ -55,7 +55,7 @@
     # Check registry entries
     - name: Check registry settings
       win_reg_stat:
-        path: "HKLM:\\SOFTWARE\\InterviewApp"
+        path: "HKLM:\\SOFTWARE\\WebApp"
         name: "{{ item }}"
       register: reg_check
       loop:
@@ -70,7 +70,7 @@
       
     # Check scheduled task
     - name: Verify scheduled task
-      win_shell: Get-ScheduledTask -TaskName "InterviewApp Cleanup" | Select-Object TaskName, State
+      win_shell: Get-ScheduledTask -TaskName "WebApp Cleanup" | Select-Object TaskName, State
       register: task_check
       ignore_errors: yes
       
