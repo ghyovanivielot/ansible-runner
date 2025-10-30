@@ -173,8 +173,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 **Ghyovani Vielot**
 - GitHub: [@ghyovanivielot](https://github.com/ghyovanivielot)
-- LinkedIn: [Connect with me](https://linkedin.com/in/yourprofile)
-
+- LinkedIn: [Connect with me](https://www.linkedin.com/in/ghyovani-vielot/)
 ---
 
 This project demonstrates enterprise-level Windows Server automation capabilities using Ansible, showcasing expertise in infrastructure as code, configuration management, and DevOps best practices.
